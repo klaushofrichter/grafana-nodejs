@@ -1,0 +1,27 @@
+grafana:
+  adminPassword: ${GRAFANA_PASS}
+
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: ${APP}-pods
+        scrape_interval: 15s
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - ${APP}
+            selectors:
+              - role: "pod"
+                label: "app=${APP}-pod"
+      - job_name: ${APP}-services
+        scrape_interval: 15s
+        kubernetes_sd_configs:
+          - role: service
+            namespaces:
+              names:
+                - ${APP}
+            selectors:
+              - role: "service"
+                label: "app=${APP}"
+
