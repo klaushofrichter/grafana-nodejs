@@ -63,8 +63,9 @@ echo "==== install prometheus-community stack (this may show warnings related to
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 cat values.yaml.template | envsubst | helm install --values - ${APP} prometheus-community/kube-prometheus-stack -n monitoring
-cat static-info-dashboard.json.template | envsubst | sed 's/^/    /' > static-info-dashboard.json
-cat configmap.yaml.fragment static-info-dashboard.json | kubectl apply -n monitoring -f -
+cat static-info-dashboard.json.template | envsubst > static-info-dashboard.json
+kubectl create configmap static-metric-dashboard-configmap -n monitoring --from-file="static-info-dashboard.json" 
+kubectl patch configmap static-metric-dashboard-configmap -p '{"metadata":{"labels":{"grafana_dashboard":"1"}}}' -n monitoring
 kubectl rollout status deployment.apps ${APP}-grafana -n monitoring --request-timeout 5m
 kubectl rollout status deployment.apps ${APP}-kube-state-metrics -n monitoring --request-timeout 5m
 kubectl rollout status deployment.apps ${APP}-kube-prometheus-stac-operator -n monitoring --request-timeout 5m
