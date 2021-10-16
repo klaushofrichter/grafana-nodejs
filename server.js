@@ -19,7 +19,7 @@ const info = {
   serverVersion: package.version
 };
 
-// setup metrics  // autoregister: true is not needed....includeStatusCode:true  is not needed
+// setup metrics 
 const promBundle = require("express-prom-bundle");
 const metricsMiddleware = promBundle({
   includePath: true,
@@ -47,7 +47,7 @@ worker.get("/info", (req, res) => {
   res.status(200).send(info);
 });
 
-worker.get("/random", (req, res) => {  // example: http://localhost:3000//set?word=test
+worker.get("/random", (req, res) => { 
   res.status(200).send({ random: Math.floor((Math.random()*100))});
 });
 
