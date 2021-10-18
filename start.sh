@@ -10,9 +10,10 @@ MINIKUBEPROFILE="$(minikube profile list | grep '^| minikube ')" || true
 if [[ "${MINIKUBEPROFILE}" != "" ]]; then
   echo
   echo "==== stop and delete the minikube cluster to start fresh (this may show errors)"
-  #minikube profile list
+  minikube profile list
   if [[ "$(echo ${MINIKUBEPROFILE} | cut -d '|' -f5 )" != " " ]]; then
-    MINIKUBEIP=`minikube ip`
+    MINIKUBEIP=`minikube ip` || true
+    [ "$?" != "0" ] && unset MINIKUBEIP
   fi
   read -p "Minikube cluster \"minikube\" exists. Ok to delete it and restart? (y/n) " -n 1 -r
   echo 
